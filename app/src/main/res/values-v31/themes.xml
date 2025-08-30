@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Pokedex" parent="Theme.SplashScreen">
+        <!-- Transparent background -->
+        <item name="windowSplashScreenBackground">@android:color/transparent</item>
+
+        <!-- Remove icon -->
+        <item name="windowSplashScreenAnimatedIcon">@null</item>
+
+        <!-- No animation -->
+        <item name="windowSplashScreenAnimationDuration">0</item>
+
+        <!-- Switch to real theme -->
+        <item name="postSplashScreenTheme">@style/Theme.PokedexApp</item>
+    </style>
+</resources>
