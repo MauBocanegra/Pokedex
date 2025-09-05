@@ -2,7 +2,8 @@ package com.maubocanegra.pokedex.pokemondetail.domain.entity
 
 data class PokemonUiEntity(
     val id: Int,
-    val name: String,
+    val name: String?,
+    val url: String?,
     val baseExperience: Int?,
     val height: Int?,
     val order: Int?,

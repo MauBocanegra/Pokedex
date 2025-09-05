@@ -1,4 +1,4 @@
-package com.maubocanegra.pokedex.pokemondetail.domain.usecase
+package com.maubocanegra.pokedex.pokemon.domain.usecase
 
 import com.maubocanegra.pokedex.pokemondetail.domain.mapper.toPokemonDetailUiState
 import com.maubocanegra.pokedex.pokemondetail.domain.model.PokemonDetailResult

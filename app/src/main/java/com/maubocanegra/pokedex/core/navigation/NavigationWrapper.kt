@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.maubocanegra.pokedex.pokemondetail.view.PokemonDetailScreen
 import com.maubocanegra.pokedex.pokemonlist.view.PokemonListScreen
+import com.maubocanegra.pokedex.pokemonrecyclerview.view.PokemonListRecyclerViewScreen
 
 @Composable
 fun NavigationWrapper() {
@@ -14,7 +15,7 @@ fun NavigationWrapper() {
 
     NavHost(
         navController = navController,
-        startDestination = PokemonListScreenNavigation,
+        startDestination = PokemonRecyclerViewScreenNavigation,
     ) {
         composable<PokemonListScreenNavigation> {
             PokemonListScreen(
@@ -33,6 +34,15 @@ fun NavigationWrapper() {
                 navigateBack = {
                     navController.popBackStack()
                 },
+            )
+        }
+        composable<PokemonRecyclerViewScreenNavigation> {
+            PokemonListRecyclerViewScreen (
+                navigateToPokemonDetail = { name, url ->
+                    navController.navigate(
+                        PokemonDetailScreenNavigation(name, url)
+                    )
+                }
             )
         }
     }

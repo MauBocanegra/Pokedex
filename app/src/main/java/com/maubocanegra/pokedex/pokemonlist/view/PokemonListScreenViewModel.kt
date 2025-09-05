@@ -1,10 +1,11 @@
 package com.maubocanegra.pokedex.pokemonlist.view
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.maubocanegra.pokedex.pokemonlist.domain.model.PokemonListItemModel
+import com.maubocanegra.pokedex.core.domain.model.PokemonListItemModel
 import com.maubocanegra.pokedex.pokemonlist.domain.usecase.GetPokemonListPagerUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -11,3 +11,6 @@ data class PokemonDetailScreenNavigation(
     val pokemonName: String,
     val pokemonUrl: String,
 )
+
+@Serializable
+object PokemonRecyclerViewScreenNavigation

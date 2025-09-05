@@ -2,8 +2,8 @@ package com.maubocanegra.pokedex.pokemonlist.domain.mapper
 
 import com.maubocanegra.pokedex.pokemonlist.data.network.model.PokemonListResponse
 import com.maubocanegra.pokedex.pokemonlist.data.network.model.PokemonURLResponse
-import com.maubocanegra.pokedex.pokemonlist.domain.model.PokemonListItemModel
-import com.maubocanegra.pokedex.pokemonlist.domain.model.PokemonListModel
+import com.maubocanegra.pokedex.core.domain.model.PokemonListItemModel
+import com.maubocanegra.pokedex.core.domain.model.PokemonListModel
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.list

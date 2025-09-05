@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.maubocanegra.pokedex.pokemonlist.data.network.PokemonApiService
 import com.maubocanegra.pokedex.pokemonlist.domain.mapper.PokemonListMapper
-import com.maubocanegra.pokedex.pokemonlist.domain.model.PokemonListItemModel
+import com.maubocanegra.pokedex.core.domain.model.PokemonListItemModel
 
 class PokemonPagingSource(
     private val pokemonApiService: PokemonApiService,

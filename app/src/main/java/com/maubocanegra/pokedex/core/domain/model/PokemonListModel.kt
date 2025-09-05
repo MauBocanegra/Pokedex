@@ -1,4 +1,4 @@
-package com.maubocanegra.pokedex.pokemonlist.domain.model
+package com.maubocanegra.pokedex.core.domain.model
 
 data class PokemonListModel (
     val results: List<PokemonListItemModel>

@@ -38,7 +38,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.maubocanegra.pokedex.R
-import com.maubocanegra.pokedex.pokemonlist.domain.model.PokemonListItemModel
+import com.maubocanegra.pokedex.core.domain.model.PokemonListItemModel
 import java.util.Locale
 
 

@@ -18,6 +18,7 @@ import com.maubocanegra.pokedex.pokemonlist.data.network.model.TypeResponse
 fun PokemonResponse.toUiEntity(): PokemonUiEntity {
     return PokemonUiEntity(
         id = this.id,
+        url = "https://pokeapi.co/api/v2/pokemon/${this.id}/",
         name = this.name,
         baseExperience = this.baseExperience,
         height = this.height,

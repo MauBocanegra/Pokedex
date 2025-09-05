@@ -1,7 +1,7 @@
 package com.maubocanegra.pokedex.pokemonlist.domain.usecase
 
 import androidx.paging.PagingData
-import com.maubocanegra.pokedex.pokemonlist.domain.model.PokemonListItemModel
+import com.maubocanegra.pokedex.core.domain.model.PokemonListItemModel
 import com.maubocanegra.pokedex.pokemonlist.domain.repository.PokemonRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

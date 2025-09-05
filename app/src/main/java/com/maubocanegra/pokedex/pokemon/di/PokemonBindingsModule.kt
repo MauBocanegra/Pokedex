@@ -1,6 +1,6 @@
-package com.maubocanegra.pokedex.pokemonlist.di
+package com.maubocanegra.pokedex.pokemon.di
 
-import com.maubocanegra.pokedex.pokemonlist.data.repository.PokemonRepositoryImpl
+import com.maubocanegra.pokedex.pokemon.data.repository.PokemonRepositoryImpl
 import com.maubocanegra.pokedex.pokemonlist.domain.repository.PokemonRepository
 import dagger.Binds
 import dagger.Module

@@ -1,9 +1,10 @@
 package com.maubocanegra.pokedex.pokemondetail.view
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maubocanegra.pokedex.pokemondetail.domain.uistate.PokemonDetailUiState
-import com.maubocanegra.pokedex.pokemondetail.domain.usecase.GetPokemonDetailUseCase
+import com.maubocanegra.pokedex.pokemon.domain.usecase.GetPokemonDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

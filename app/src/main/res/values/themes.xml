@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.PokedexApp" parent="android:Theme.Material.NoActionBar" />
+    <style name="Theme.PokedexApp" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
 
     <!-- Pre-Android 12 splash fallback -->
     <style name="Theme.Pokedex" parent="Theme.PokedexApp" />

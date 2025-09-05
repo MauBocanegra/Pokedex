@@ -1,6 +1,6 @@
 package com.maubocanegra.pokedex.pokemonlist.view.presentation
 
-import com.maubocanegra.pokedex.pokemonlist.domain.model.PokemonListModel
+import com.maubocanegra.pokedex.core.domain.model.PokemonListModel
 import com.maubocanegra.pokedex.pokemonlist.domain.model.UIState
 
 data class PokemonListUiState(

@@ -2,7 +2,7 @@ package com.maubocanegra.pokedex.pokemonlist.domain.usecase
 
 import androidx.paging.AsyncPagingDataDiffer
 import androidx.paging.PagingData
-import com.maubocanegra.pokedex.pokemonlist.domain.model.PokemonListItemModel
+import com.maubocanegra.pokedex.core.domain.model.PokemonListItemModel
 import com.maubocanegra.pokedex.pokemonlist.domain.repository.PokemonRepository
 import io.mockk.coEvery
 import io.mockk.mockk
