@@ -77,7 +77,6 @@ class PokemonRecyclerViewViewModel @Inject constructor(
             }
         }
 
-        // Update the StateFlow with the new list while keeping other UIState fields intact
         _uiState.value = _uiState.value.copy(
             pokemonList = newList
         )

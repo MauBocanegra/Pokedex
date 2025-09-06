@@ -45,19 +45,17 @@ class PokemonListDiffCallback (
 
         if (oldItem.name != newItem.name) diff["name"] = newItem.name
         if (oldItem.url != newItem.url) diff["url"] = newItem.url
-        if (oldItem.baseExperience != newItem.baseExperience) diff["baseExperience"] = newItem.baseExperience
-        if (oldItem.height != newItem.height) diff["height"] = newItem.height
-        if (oldItem.order != newItem.order) diff["order"] = newItem.order
-        if (oldItem.weight != newItem.weight) diff["weight"] = newItem.weight
-        if (oldItem.abilities != newItem.abilities) diff["abilities"] = newItem.abilities
-        if (oldItem.forms != newItem.forms) diff["forms"] = newItem.forms
-        if (oldItem.locationAreaEncounters != newItem.locationAreaEncounters) diff["locationAreaEncounters"] = newItem.locationAreaEncounters
-        if (oldItem.moves != newItem.moves) diff["moves"] = newItem.moves
-        if (oldItem.sprites != newItem.sprites) diff["sprites"] = newItem.sprites
-        if (oldItem.stats != newItem.stats) diff["stats"] = newItem.stats
-        if (oldItem.types != newItem.types) diff["types"] = newItem.types
-        if (oldItem.officialArtwork != newItem.officialArtwork) diff["officialArtwork"] = newItem.officialArtwork
-        if (oldItem.criesLatest != newItem.criesLatest) diff["criesLatest"] = newItem.criesLatest
+
+        var typeHasChanges = false
+        oldItem.types.zip(newItem.types).forEach { pair ->
+            val slotHasChanged = pair.first.slot != pair.second.slot
+            val nameHasChanged = pair.first.type.name != pair.second.type.name
+            val urlHasChanged = pair.first.type.url != pair.second.type.url
+            typeHasChanges = slotHasChanged || nameHasChanged || urlHasChanged
+        }
+        if (typeHasChanges) {
+            diff["types"] = newItem.types
+        }
 
         return if (diff.isEmpty()) null else diff
     }

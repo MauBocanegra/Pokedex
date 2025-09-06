@@ -95,6 +95,10 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
 
+    // Room
+    implementation(libs.bundles.room)
+    ksp(libs.room.compiler)
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)

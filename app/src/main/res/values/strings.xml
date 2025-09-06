@@ -4,5 +4,6 @@
 
     <string name="placeholder_pokemon_name">Pokemon name</string>
     <string name="placeholder_pokedex_id">#001</string>
+    <string name="placeholder_pokemon_type">Type</string>
     <string name="error_default">Oops! Something went wrong :(</string>
 </resources>

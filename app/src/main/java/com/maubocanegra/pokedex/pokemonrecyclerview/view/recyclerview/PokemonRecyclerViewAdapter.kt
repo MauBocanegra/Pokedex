@@ -31,6 +31,19 @@ class PokemonRecyclerViewAdapter(
         holder.bind(items[position])
     }
 
+    override fun onBindViewHolder(
+        holder: PokemonItemViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if(payloads.isEmpty()){
+            super.onBindViewHolder(holder, position, payloads)
+        } else {
+            val diffMap = payloads[0] as Map<String, Any?>
+            holder.bindPartial(diffMap)
+        }
+    }
+
     override fun getItemCount(): Int = items.size
 
     override fun onViewAttachedToWindow(holder: PokemonItemViewHolder) {
