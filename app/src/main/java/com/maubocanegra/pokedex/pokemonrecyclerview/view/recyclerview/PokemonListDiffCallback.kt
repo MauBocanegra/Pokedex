@@ -47,7 +47,7 @@ class PokemonListDiffCallback (
         if (oldItem.url != newItem.url) diff["url"] = newItem.url
 
         var typeHasChanges = false
-        oldItem.types.zip(newItem.types).forEach { pair ->
+        oldItem.types?.zip(newItem.types.orEmpty())?.forEach { pair ->
             val slotHasChanged = pair.first.slot != pair.second.slot
             val nameHasChanged = pair.first.type.name != pair.second.type.name
             val urlHasChanged = pair.first.type.url != pair.second.type.url

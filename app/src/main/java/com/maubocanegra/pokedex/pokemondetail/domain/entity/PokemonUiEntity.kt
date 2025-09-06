@@ -14,7 +14,7 @@ data class PokemonUiEntity(
     val moves: List<PokemonMoveUiEntity>?,
     val sprites: List<PokemonSpriteUiEntity>?,
     val stats: List<PokemonStatUiEntity>?,
-    val types: List<PokemonTypesUiEntity>,
+    val types: List<PokemonTypesUiEntity>?,
     val officialArtwork: String?,
     val criesLatest: String?,
 )
