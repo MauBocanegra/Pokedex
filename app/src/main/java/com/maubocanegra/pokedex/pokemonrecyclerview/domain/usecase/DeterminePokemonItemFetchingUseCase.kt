@@ -17,7 +17,7 @@ class DeterminePokemonItemFetchingUseCase @Inject constructor(
     private val _pokemonItemAttachmentState = MutableSharedFlow<FetchPokemonSignal>()
     val pokemonAttachmentState: SharedFlow<FetchPokemonSignal> = _pokemonItemAttachmentState
 
-    private val visibilityJobs = mutableMapOf<String, Job>()
+    private val visibilityJobs = mutableMapOf<Int, Job>()
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Default
     )
@@ -32,26 +32,26 @@ class DeterminePokemonItemFetchingUseCase @Inject constructor(
                     delay(millisVisibleBeforeRequestingDetail)
                     _pokemonItemAttachmentState.emit(
                         FetchPokemonSignal(
-                            windowAttachmentState.pokemonIdOrName
+                            windowAttachmentState.pokemonId
                         )
                     )
                 }
-                visibilityJobs[windowAttachmentState.pokemonIdOrName] = job
+                visibilityJobs[windowAttachmentState.pokemonId] = job
             }
 
             is DetachedFromWindowState -> {
-                visibilityJobs[windowAttachmentState.pokemonIdOrName]?.cancel()
-                visibilityJobs.remove(windowAttachmentState.pokemonIdOrName)
+                visibilityJobs[windowAttachmentState.pokemonId]?.cancel()
+                visibilityJobs.remove(windowAttachmentState.pokemonId)
             }
         }
     }
 
     sealed interface WindowAttachmentState
     data class AttachedToWindowState(
-        val pokemonIdOrName: String
+        val pokemonId: Int
     ): WindowAttachmentState
     data class DetachedFromWindowState(
-        val pokemonIdOrName: String
+        val pokemonId: Int
     ): WindowAttachmentState
-    data class FetchPokemonSignal(val pokemonIdOrName: String)
+    data class FetchPokemonSignal(val pokemonId: Int)
 }

@@ -2,6 +2,8 @@ package com.maubocanegra.pokedex.pokemonrecyclerview.domain.mapper
 
 import com.maubocanegra.pokedex.core.domain.model.PokemonListItemModel
 import com.maubocanegra.pokedex.core.network.util.APIResult
+import com.maubocanegra.pokedex.pokemon.data.persistence.converter.PokemonTypeConverters.toSprites
+import com.maubocanegra.pokedex.pokemon.data.persistence.converter.PokemonTypeConverters.toTypesList
 import com.maubocanegra.pokedex.pokemonrecyclerview.domain.uistate.PokemonRecyclerViewUiState
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonUiEntity
 import com.maubocanegra.pokedex.pokemonlist.domain.model.UIState
@@ -16,6 +18,7 @@ fun mapPokemonRecyclerViewResponseToUiState(
                 uiState = UIState.LOADING
             )
         }
+        // TODO mapper not finished
         is APIResult.Success -> {
             val uiList = apiResult.data.map { item ->
                 PokemonUiEntity(
@@ -30,9 +33,9 @@ fun mapPokemonRecyclerViewResponseToUiState(
                     forms = null,
                     locationAreaEncounters = null,
                     moves = null,
-                    sprites = null,
+                    sprites = toSprites(item.frontSpriteUrl),
                     stats = null,
-                    types = emptyList(),
+                    types = toTypesList(item.types),
                     officialArtwork = null,
                     criesLatest = null
                 )

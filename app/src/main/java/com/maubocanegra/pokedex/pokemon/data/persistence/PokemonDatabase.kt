@@ -11,7 +11,7 @@ import com.maubocanegra.pokedex.pokemon.data.persistence.entity.PokemonListItemD
 
 @Database(
     entities = [PokemonListItemDBEntity::class, PokemonDetailDBEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 

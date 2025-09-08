@@ -44,7 +44,7 @@ class PokemonItemViewHolder(
         pokemonType.text = Html.fromHtml(
             pokemon.types?.formatPokemonType(
                 binding.root.context.getString(R.string.placeholder_pokemon_type)
-            ),
+            ) ?: binding.root.context.getString(R.string.placeholder_pokemon_type),
             FROM_HTML_MODE_LEGACY
         )
 

@@ -20,9 +20,9 @@ class PokemonApiService @Inject constructor(
         }
     }
 
-    suspend fun getPokemonDetail(idOrName: String): APIResult<PokemonResponse> {
+    suspend fun getPokemonDetail(id: Int): APIResult<PokemonResponse> {
         return try {
-            val response = api.getPokemonDetail(idOrName)
+            val response = api.getPokemonDetail(id)
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null) {

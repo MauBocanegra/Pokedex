@@ -13,12 +13,12 @@ class GetPokemonDetailUseCase @Inject constructor(
     private val repository: PokemonRepository
 ) {
 
-    operator fun invoke(pokemonIdOrName: String): Flow<PokemonDetailUiState> = flow {
+    operator fun invoke(pokemonId: Int): Flow<PokemonDetailUiState> = flow {
         // Emit loading state first
         emit(PokemonDetailUiState(uiState = UIState.LOADING))
 
         try {
-            val pokemonDetailResult = repository.getPokemonDetail(pokemonIdOrName)
+            val pokemonDetailResult = repository.getPokemonDetail(pokemonId)
             when (pokemonDetailResult) {
                 is PokemonDetailResult.Success -> emit(pokemonDetailResult.toPokemonDetailUiState())
                 is PokemonDetailResult.Error -> emit(pokemonDetailResult.toPokemonDetailUiState())

@@ -17,6 +17,6 @@ interface PokemonRepository {
     ): Flow<APIResult<List<PokemonListItemModel>>>
 
     suspend fun getPokemonDetail(
-        pokemonIdOrName: String
+        pokemonId: Int
     ): PokemonDetailResult
 }

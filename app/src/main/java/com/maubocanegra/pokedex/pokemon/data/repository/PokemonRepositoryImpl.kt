@@ -12,14 +12,13 @@ import com.maubocanegra.pokedex.core.domain.model.PokemonListItemModel
 import com.maubocanegra.pokedex.pokemon.data.persistence.dao.PokemonDetailDao
 import com.maubocanegra.pokedex.pokemon.data.persistence.dao.PokemonListDao
 import com.maubocanegra.pokedex.pokemon.data.persistence.mapper.toDBEntity
+import com.maubocanegra.pokedex.pokemon.data.persistence.mapper.toListDBEntity
 import com.maubocanegra.pokedex.pokemon.data.persistence.mapper.toModel
 import com.maubocanegra.pokedex.pokemon.data.persistence.mapper.toUiEntity
 import com.maubocanegra.pokedex.pokemonlist.domain.repository.PokemonRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
-import retrofit2.HttpException
-import java.io.IOException
 import javax.inject.Inject
 
 class PokemonRepositoryImpl @Inject constructor(
@@ -38,31 +37,27 @@ class PokemonRepositoryImpl @Inject constructor(
         ).flow
     }
 
-    override suspend fun getPokemonDetail(pokemonIdOrName: String): PokemonDetailResult {
+    override suspend fun getPokemonDetail(pokemonId: Int): PokemonDetailResult {
         return try {
 
-            val id = pokemonIdOrName.toIntOrNull()
-
             // --- 1. Try DB cache ---
-            val cached = when {
-                // If parsing id is not possible, fallback to name
-                id != null -> pokemonDetailDao.getPokemonDetailById(id).firstOrNull()
-                else -> pokemonDetailDao.getPokemonDetailByName(pokemonIdOrName).firstOrNull()
-            }
+            val cached = pokemonDetailDao.getPokemonDetailById(pokemonId).firstOrNull()
 
             if (cached != null) {
                 return PokemonDetailResult.Success(cached.toUiEntity())
             }
 
             // 2. Fetch from API
-            val response = pokemonApiService.getPokemonDetail(pokemonIdOrName)
+            val response = pokemonApiService.getPokemonDetail(pokemonId)
             when (response) {
                 is APIResult.Success -> {
                     val uiEntity = PokemonDetailResult.Success(response.data.toUiEntity())
 
                     // 3. Save to DB
                     pokemonDetailDao.insertPokemonDetail(uiEntity.pokemon.toDBEntity())
-
+                    pokemonListDao.insertPokemonList(
+                        listOf(uiEntity.pokemon.toDBEntity().toListDBEntity())
+                    )
                     uiEntity
                 }
                 is APIResult.Failure -> PokemonDetailResult.Error(response.throwable, response.message)
@@ -82,7 +77,9 @@ class PokemonRepositoryImpl @Inject constructor(
         // 1. Emit from DB cache for this page only
         val cached = pokemonListDao.getPokemonPage(limit, offset).firstOrNull()
         if (!cached.isNullOrEmpty()) {
-            emit(APIResult.Success(cached.map { it.toModel() }))
+            val toBeEmited = APIResult.Success(cached.map { it.toModel() })
+            emit(toBeEmited)
+            return@flow
         }
 
         // 2. Fetch from API

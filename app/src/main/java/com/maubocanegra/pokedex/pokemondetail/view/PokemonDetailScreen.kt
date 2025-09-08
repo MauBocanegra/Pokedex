@@ -50,13 +50,13 @@ import java.util.Locale
 
 @Composable
 fun PokemonDetailScreen(
-    pokemonName: String,
+    pokemonId: Int,
     navigateBack: () -> Unit,
     pokemonDetailViewModel: PokemonDetailViewModel = hiltViewModel<PokemonDetailViewModel>()
 ) {
 
-    LaunchedEffect(pokemonName) {
-        pokemonDetailViewModel.getPokemonDetail(pokemonName)
+    LaunchedEffect(pokemonId) {
+        pokemonDetailViewModel.getPokemonDetail(pokemonId)
     }
 
     val pokemonUiState = pokemonDetailViewModel

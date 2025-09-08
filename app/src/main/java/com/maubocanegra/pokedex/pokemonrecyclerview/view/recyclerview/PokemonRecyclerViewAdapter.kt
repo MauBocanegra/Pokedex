@@ -8,8 +8,8 @@ import com.maubocanegra.pokedex.databinding.ItemPokemonBinding
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonUiEntity
 
 class PokemonRecyclerViewAdapter(
-    private val onItemAttached: (String) -> Unit,
-    private val onItemDetached: (String) -> Unit,
+    private val onItemAttached: (Int) -> Unit,
+    private val onItemDetached: (Int) -> Unit,
     private val onItemClicked: (name: String, url: String) -> Unit,
 ): RecyclerView.Adapter<PokemonItemViewHolder>() {
 
@@ -59,7 +59,7 @@ class PokemonRecyclerViewAdapter(
         val position = holder.bindingAdapterPosition
 
         if(position != RecyclerView.NO_POSITION && !items[position].name.isNullOrEmpty()){
-            onItemAttached(items[position].name!!)
+            onItemAttached(items[position].id)
         }
     }
 
@@ -67,7 +67,7 @@ class PokemonRecyclerViewAdapter(
         super.onViewDetachedFromWindow(holder)
         val position = holder.bindingAdapterPosition
         if(position != RecyclerView.NO_POSITION && !items[position].name.isNullOrEmpty()){
-            onItemDetached(items[position].name!!)
+            onItemDetached(items[position].id)
         }
     }
 

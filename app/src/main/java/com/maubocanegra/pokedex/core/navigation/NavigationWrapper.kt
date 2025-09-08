@@ -30,7 +30,7 @@ fun NavigationWrapper() {
             val detail =
                 navBackStackEntry.toRoute<PokemonDetailScreenNavigation>()
             PokemonDetailScreen(
-                pokemonName = detail.pokemonName,
+                pokemonId = detail.pokemonUrl.trimEnd('/').split("/").lastOrNull()?.toInt() ?: 0,
                 navigateBack = {
                     navController.popBackStack()
                 },

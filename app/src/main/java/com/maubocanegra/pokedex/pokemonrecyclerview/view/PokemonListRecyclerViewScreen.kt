@@ -20,8 +20,8 @@ import com.maubocanegra.pokedex.pokemonrecyclerview.view.fragment.PokemonRecycle
 @Composable
 fun PokemonListRecyclerViewScreen(
     navigateToPokemonDetail: (name: String, url: String) -> Unit,
-    itemViewAttached: ((pokemonIdOrName: String) -> Unit)? = null,
-    itemViewDetached: ((pokemonIdOrName: String) -> Unit)? = null,
+    itemViewAttached: ((pokemonId: Int) -> Unit)? = null,
+    itemViewDetached: ((pokemonId: Int) -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val fragmentActivity = context as? FragmentActivity

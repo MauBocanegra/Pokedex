@@ -96,7 +96,7 @@ class PokemonRecyclerViewViewModel @Inject constructor(
     private fun listenForPokemonItemDetailRequest(){
         viewModelScope.launch {
             pokemonDetailFetchBeaconUseCase.pokemonAttachmentState.collect{ state ->
-                pokemonDetailUseCase(state.pokemonIdOrName)
+                pokemonDetailUseCase(state.pokemonId)
                     .collect { pokemonDetail ->
                         if(pokemonDetail.pokemon!=null){
                             updatePokemonInList(pokemonDetail.pokemon)
@@ -125,15 +125,15 @@ class PokemonRecyclerViewViewModel @Inject constructor(
 
     // ---------------- Item attachment ----------------
 
-    fun pokemonItemAttachesToScreen(pokemonIdOrName: String) {
+    fun pokemonItemAttachesToScreen(pokemonId: Int) {
         pokemonDetailFetchBeaconUseCase.handleAttachmentState(
-            DeterminePokemonItemFetchingUseCase.AttachedToWindowState(pokemonIdOrName)
+            DeterminePokemonItemFetchingUseCase.AttachedToWindowState(pokemonId)
         )
     }
 
-    fun pokemonItemDetachesFromScreen(pokemonIdOrName: String) {
+    fun pokemonItemDetachesFromScreen(pokemonId: Int) {
         pokemonDetailFetchBeaconUseCase.handleAttachmentState(
-            DeterminePokemonItemFetchingUseCase.DetachedFromWindowState(pokemonIdOrName)
+            DeterminePokemonItemFetchingUseCase.DetachedFromWindowState(pokemonId)
         )
     }
 }

@@ -21,8 +21,8 @@ class PokemonRecyclerViewFragment : Fragment() {
 
     // Lambda will be assigned after creation in order to have an empty factory
     var navigateToPokemonDetail: ((name: String, url: String) -> Unit)? = null
-    var itemViewAttached: ((pokemonIdOrName: String) -> Unit)? = null
-    var itemViewDetached: ((pokemonIdOrName: String) -> Unit)? = null
+    var itemViewAttached: ((pokemonId: Int) -> Unit)? = null
+    var itemViewDetached: ((pokemonId: Int) -> Unit)? = null
 
     private val pokemonViewModel: PokemonRecyclerViewViewModel by viewModels()
     private lateinit var pokemonAdapter: PokemonRecyclerViewAdapter
@@ -59,11 +59,11 @@ class PokemonRecyclerViewFragment : Fragment() {
             onItemClicked = { pokemonName, pokemonUrl ->
                 navigateToPokemonDetail?.invoke(pokemonName, pokemonUrl)
             },
-            onItemAttached = { pokemonIdOrName ->
-                pokemonViewModel.pokemonItemAttachesToScreen(pokemonIdOrName)
+            onItemAttached = { pokemonId ->
+                pokemonViewModel.pokemonItemAttachesToScreen(pokemonId)
             },
-            onItemDetached = { pokemonIdOrName ->
-                pokemonViewModel.pokemonItemDetachesFromScreen(pokemonIdOrName)
+            onItemDetached = { pokemonId ->
+                pokemonViewModel.pokemonItemDetachesFromScreen(pokemonId)
             },
         )
         binding.recyclerView.apply {
@@ -83,7 +83,7 @@ class PokemonRecyclerViewFragment : Fragment() {
                 val totalItemCount = layoutManager.itemCount
                 val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
 
-                val threshold = 9 // how close to the end to trigger next page
+                val threshold = 15 // how close to the end to trigger next page
 
                 if ((visibleItemCount + firstVisibleItemPosition) >= (totalItemCount - threshold)
                     && firstVisibleItemPosition >= 0

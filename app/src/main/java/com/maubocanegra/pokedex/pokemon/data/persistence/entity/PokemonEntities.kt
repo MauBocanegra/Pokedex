@@ -7,7 +7,9 @@ import androidx.room.PrimaryKey
 data class PokemonListItemDBEntity(
     @PrimaryKey val id: Int,
     val name: String,
-    val url: String
+    val url: String,
+    val types: String? = null,       // JSON string of types
+    val frontSpriteUrl: String? = null // URL for front sprite
 )
 
 @Entity(tableName = "pokemon_detail")

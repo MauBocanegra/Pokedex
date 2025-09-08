@@ -59,8 +59,26 @@ class PokemonListDiffCallback (
                 typeHasChanges = true
             }
         }
+
         if (typeHasChanges) {
             diff["types"] = newItem.types
+        }
+
+        var spriteHasChanges = false
+        oldItem.sprites?.zip(newItem.sprites.orEmpty())?.forEach { (oldSprite, newSprite) ->
+            val frontSpriteHasChange =
+                oldSprite.frontDefault != newSprite.frontDefault
+            val backSpriteHasChanged =
+                oldSprite.backDefault != newSprite.backDefault
+            val shinySpriteHasChanged =
+                oldSprite.backShiny != newSprite.backShiny
+            if(frontSpriteHasChange || backSpriteHasChanged || shinySpriteHasChanged) {
+                spriteHasChanges = true
+            }
+        }
+
+        if(spriteHasChanges) {
+            diff["sprites"] = newItem.sprites
         }
 
         return if (diff.isEmpty()) null else diff

@@ -8,4 +8,6 @@ data class PokemonListItemModel(
     val id: Int,
     val name: String,
     val url: String,
+    val types: String? = null,  // JSON string
+    val frontSpriteUrl: String? = null  // url
 )

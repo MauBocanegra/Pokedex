@@ -19,8 +19,8 @@ class PokemonDetailViewModel @Inject constructor(
     private val _pokemonDetailState = MutableStateFlow(PokemonDetailUiState())
     val pokemonDetailState: StateFlow<PokemonDetailUiState> = _pokemonDetailState
 
-    fun getPokemonDetail(pokemonIdOrName: String) {
-        getPokemonDetailUseCase(pokemonIdOrName)
+    fun getPokemonDetail(pokemonId: Int) {
+        getPokemonDetailUseCase(pokemonId)
             .onEach { state ->
                 _pokemonDetailState.value = state
             }
