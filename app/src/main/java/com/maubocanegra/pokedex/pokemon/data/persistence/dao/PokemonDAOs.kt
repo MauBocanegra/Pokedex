@@ -10,8 +10,13 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PokemonListDao {
-    @Query("SELECT * FROM pokemon_list")
-    fun getAllPokemon(): Flow<List<PokemonListItemDBEntity>>
+
+    @Query("""
+            SELECT * FROM pokemon_list
+            ORDER BY id ASC
+            LIMIT :limit OFFSET :offset
+    """)
+    fun getPokemonPage(limit: Int, offset: Int): Flow<List<PokemonListItemDBEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPokemonList(items: List<PokemonListItemDBEntity>)

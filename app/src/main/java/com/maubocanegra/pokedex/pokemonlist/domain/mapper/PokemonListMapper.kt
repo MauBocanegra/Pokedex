@@ -10,10 +10,11 @@ object PokemonListMapper {
         response: PokemonListResponse
     ): PokemonListModel {
         val items = response.results?.mapNotNull {
+            val id = it.url?.trimEnd('/')?.substringAfterLast('/')?.toInt()
             val name = it.name
             val url = it.url
             if(!name.isNullOrBlank() && !url.isNullOrBlank()){
-                PokemonListItemModel(name, url)
+                PokemonListItemModel(id ?: 0, name, url)
             } else {
                 null
             }

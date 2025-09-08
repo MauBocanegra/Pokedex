@@ -5,6 +5,7 @@ data class PokemonListModel (
 )
 
 data class PokemonListItemModel(
+    val id: Int,
     val name: String,
     val url: String,
 )

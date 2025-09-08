@@ -38,6 +38,10 @@ class PokemonListDiffCallback (
     }
 
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+        if (oldItemPosition !in oldList.indices || newItemPosition !in newList.indices) {
+            return null
+        }
+
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
@@ -47,11 +51,13 @@ class PokemonListDiffCallback (
         if (oldItem.url != newItem.url) diff["url"] = newItem.url
 
         var typeHasChanges = false
-        oldItem.types?.zip(newItem.types.orEmpty())?.forEach { pair ->
-            val slotHasChanged = pair.first.slot != pair.second.slot
-            val nameHasChanged = pair.first.type.name != pair.second.type.name
-            val urlHasChanged = pair.first.type.url != pair.second.type.url
-            typeHasChanges = slotHasChanged || nameHasChanged || urlHasChanged
+        oldItem.types?.zip(newItem.types.orEmpty())?.forEach { (oldType, newType) ->
+            val slotHasChanged = oldType.slot != newType.slot
+            val nameHasChanged = oldType.type.name != newType.type.name
+            val urlHasChanged = oldType.type.url != newType.type.url
+            if (slotHasChanged || nameHasChanged || urlHasChanged) {
+                typeHasChanges = true
+            }
         }
         if (typeHasChanges) {
             diff["types"] = newItem.types

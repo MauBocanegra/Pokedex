@@ -4,4 +4,5 @@ enum class UIState {
     SUCCESS,
     FAILED,
     LOADING,
+    LOADING_NEXT_PAGE,
 }

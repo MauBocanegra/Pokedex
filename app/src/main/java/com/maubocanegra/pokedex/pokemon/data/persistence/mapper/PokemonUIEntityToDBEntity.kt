@@ -54,7 +54,11 @@ fun PokemonDetailDBEntity.toUiEntity(): PokemonUiEntity = PokemonUiEntity(
 // List Item Mapper
 // -----------------------------
 fun PokemonListItemDBEntity.toModel() =
-    PokemonListItemModel(name, url)
+    PokemonListItemModel(id, name, url)
 
 fun PokemonListItemModel.toDBEntity() =
-    PokemonListItemDBEntity(name, url)
+    PokemonListItemDBEntity(
+        id = url.trimEnd('/').substringAfterLast('/').toInt(),
+        name = name,
+        url = url
+    )

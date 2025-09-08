@@ -15,6 +15,14 @@ class PokemonRecyclerViewAdapter(
 
     private val items: MutableList<PokemonUiEntity> = mutableListOf()
 
+    init {
+        setHasStableIds(true)
+    }
+
+    override fun getItemId(position: Int): Long {
+        return items[position].id?.toLong() ?: RecyclerView.NO_ID
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PokemonItemViewHolder {
         val binding = ItemPokemonBinding.inflate(
             LayoutInflater.from(parent.context),

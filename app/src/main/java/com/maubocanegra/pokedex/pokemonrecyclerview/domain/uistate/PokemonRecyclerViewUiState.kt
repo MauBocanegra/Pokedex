@@ -7,4 +7,10 @@ data class PokemonRecyclerViewUiState(
     val pokemonList: List<PokemonUiEntity> = emptyList(),
     val uiState: UIState = UIState.LOADING,
     val errorMessage: String? = null,
+
+    // Pagination-related
+    val currentOffset: Int = 0,
+    val pageSize: Int = 20,
+    val isLoadingNextPage: Boolean = false,
+    val endReached: Boolean = false
 )

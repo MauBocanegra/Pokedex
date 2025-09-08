@@ -1,6 +1,5 @@
 package com.maubocanegra.pokedex.pokemonrecyclerview.domain.usecase
 
-import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -14,7 +13,7 @@ import javax.inject.Inject
 class DeterminePokemonItemFetchingUseCase @Inject constructor(
 ) {
 
-    private val millisVisibleBeforeRequestingDetail = 500L
+    private val millisVisibleBeforeRequestingDetail = 100L
     private val _pokemonItemAttachmentState = MutableSharedFlow<FetchPokemonSignal>()
     val pokemonAttachmentState: SharedFlow<FetchPokemonSignal> = _pokemonItemAttachmentState
 

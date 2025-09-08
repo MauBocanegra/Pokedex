@@ -80,9 +80,10 @@ fun PokemonDetailScreen(
                         contentAlignment = Alignment.Center
                     ) { CircularProgressIndicator() }
                 }
-                UIState.SUCCESS -> {
+                UIState.SUCCESS, UIState.LOADING_NEXT_PAGE -> {
                     PokemonDetailView(pokemonUiState.pokemon)
                 }
+                //TODO Create another UI State
                 UIState.FAILED -> {
                     Text(
                         modifier = Modifier.fillMaxWidth(),

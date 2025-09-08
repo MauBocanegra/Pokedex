@@ -32,12 +32,34 @@ class PokemonRecyclerViewViewModel @Inject constructor(
     val uiState: StateFlow<PokemonRecyclerViewUiState> = _uiState
 
     init {
-        loadPokemonList()
+        loadInitialPokemonList()
         listenForPokemonItemDetailRequest()
     }
 
-    private fun loadPokemonList(limit: Int = 20, offset: Int = 0) {
+    private fun loadInitialPokemonList() {
+        loadPokemonList(isInitial = true)
+    }
+
+    fun loadNextPage() {
+        val state = _uiState.value
+        //avoid multiple fetching if already fetching next page
+        if (state.isLoadingNextPage || state.endReached) return
+
+        loadPokemonList(isInitial = false)
+    }
+
+    private fun loadPokemonList(isInitial: Boolean) {
         viewModelScope.launch {
+            val state = _uiState.value
+
+            _uiState.value = state.copy(
+                uiState = if (isInitial) UIState.LOADING else UIState.LOADING_NEXT_PAGE,
+                isLoadingNextPage = !isInitial
+            )
+
+            val limit = state.pageSize
+            val offset = if (isInitial) 0 else state.currentOffset
+
             getPokemonRecyclerViewUiStateUseCase(limit, offset)
                 .catch { throwable ->
                     _uiState.value = PokemonRecyclerViewUiState(
@@ -46,11 +68,30 @@ class PokemonRecyclerViewViewModel @Inject constructor(
                         errorMessage = throwable.message ?: "Unknown error"
                     )
                 }
-                .collect { state ->
-                    _uiState.value = state
+                .collect { newState ->
+                    val newItems = newState.pokemonList
+
+                    if(isInitial) {
+                        _uiState.value = newState.copy(
+                            pokemonList = newItems,
+                            currentOffset = newItems.size,
+                            isLoadingNextPage = false,
+                            endReached = newItems.isEmpty()
+                        )
+                    } else {
+                        val combined = state.pokemonList + newItems
+                        _uiState.value = state.copy(
+                            pokemonList = combined,
+                            currentOffset = combined.size,
+                            isLoadingNextPage = false,
+                            endReached = newItems.isEmpty()
+                        )
+                    }
                 }
         }
     }
+
+    // ---------------- Pokemon Detail ----------------
 
     private fun listenForPokemonItemDetailRequest(){
         viewModelScope.launch {
@@ -81,6 +122,8 @@ class PokemonRecyclerViewViewModel @Inject constructor(
             pokemonList = newList
         )
     }
+
+    // ---------------- Item attachment ----------------
 
     fun pokemonItemAttachesToScreen(pokemonIdOrName: String) {
         pokemonDetailFetchBeaconUseCase.handleAttachmentState(

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.maubocanegra.pokedex.databinding.FragmentPokemonRecyclerViewBinding
 import com.maubocanegra.pokedex.pokemonrecyclerview.view.recyclerview.PokemonRecyclerViewAdapter
 import com.maubocanegra.pokedex.pokemonrecyclerview.view.recyclerview.PokemonRecyclerViewViewModel
@@ -70,12 +71,35 @@ class PokemonRecyclerViewFragment : Fragment() {
             adapter = pokemonAdapter
             setHasFixedSize(true) // optimization
         }
+
+        binding.recyclerView.addOnScrollListener( object: RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy <= 0) return // only trigger on scroll down
+
+                val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+
+                val visibleItemCount = layoutManager.childCount
+                val totalItemCount = layoutManager.itemCount
+                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+                val threshold = 9 // how close to the end to trigger next page
+
+                if ((visibleItemCount + firstVisibleItemPosition) >= (totalItemCount - threshold)
+                    && firstVisibleItemPosition >= 0
+                ) {
+                    // Tell the ViewModel to load next page
+                    pokemonViewModel.loadNextPage()
+                }
+            }
+        })
     }
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
             pokemonViewModel.uiState.collectLatest { state ->
                 pokemonAdapter.submitList(state.pokemonList)
+                //pokemonAdapter.appendList(state.pokemonList)
                 // Handle state.uiState (LOADING, FAILED) here
             }
         }
