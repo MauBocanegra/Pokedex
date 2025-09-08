@@ -79,8 +79,8 @@ class PokemonRepositoryImpl @Inject constructor(
     ): Flow<APIResult<List<PokemonListItemModel>>> = flow {
         emit(APIResult.Loading)
 
-        // 1. Emit from DB cache first (if available)
-        val cached = pokemonListDao.getAllPokemon().firstOrNull()
+        // 1. Emit from DB cache for this page only
+        val cached = pokemonListDao.getPokemonPage(limit, offset).firstOrNull()
         if (!cached.isNullOrEmpty()) {
             emit(APIResult.Success(cached.map { it.toModel() }))
         }
@@ -88,28 +88,35 @@ class PokemonRepositoryImpl @Inject constructor(
         // 2. Fetch from API
         val response = try {
             pokemonApiService.getPokemonList(limit, offset)
-        } catch (e: IOException) {
-            emit(APIResult.Failure(e))
-            return@flow
-        } catch (e: HttpException) {
-            emit(APIResult.Failure(e, code = e.code()))
-            return@flow
         } catch (e: Exception) {
             emit(APIResult.Failure(e))
             return@flow
         }
 
+        // 3. Parse results
         val items = response.results?.mapNotNull { result ->
             if (!result.name.isNullOrEmpty() && !result.url.isNullOrEmpty()) {
-                PokemonListItemModel(result.name, result.url)
+                PokemonListItemModel(
+                    result.url.trimEnd('/').substringAfterLast('/').toInt(),
+                    result.name,
+                    result.url
+                )
             } else null
         }.orEmpty()
 
-        // 3. Save to DB
-        // TODO update instead of re insert full list
-        pokemonListDao.clearPokemonList()
-        pokemonListDao.insertPokemonList(items.map { it.toDBEntity() })
+        if (items.isNotEmpty()) {
+            // Insert with extracted IDs to enforce deterministic ordering
+            pokemonListDao.insertPokemonList(items.map { it.toDBEntity() })
 
+            // Fetch updated page from DB to guarantee order consistency
+            val updatedCache = pokemonListDao.getPokemonPage(limit, offset).firstOrNull()
+            if (!updatedCache.isNullOrEmpty()) {
+                emit(APIResult.Success(updatedCache.map { it.toModel() }))
+                return@flow
+            }
+        }
+
+        // Fallback: emit API results if DB somehow empty
         emit(APIResult.Success(items))
     }
 }
