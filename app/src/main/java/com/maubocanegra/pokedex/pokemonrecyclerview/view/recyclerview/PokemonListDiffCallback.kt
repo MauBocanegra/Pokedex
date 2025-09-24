@@ -2,6 +2,7 @@ package com.maubocanegra.pokedex.pokemonrecyclerview.view.recyclerview
 
 import androidx.recyclerview.widget.DiffUtil
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonUiEntity
+import com.maubocanegra.pokedex.pokemonrecyclerview.view.payloadmapper.PokemonPayload
 
 class PokemonListDiffCallback (
     private val oldList: List<PokemonUiEntity>,
@@ -45,10 +46,17 @@ class PokemonListDiffCallback (
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        val diff = mutableMapOf<String, Any?>()
+        //val diff = mutableMapOf<String, Any?>()
+        val payload = mutableListOf<PokemonPayload>()
 
-        if (oldItem.name != newItem.name) diff["name"] = newItem.name
-        if (oldItem.url != newItem.url) diff["url"] = newItem.url
+        //if (oldItem.name != newItem.name) diff["name"] = newItem.name
+        if(oldItem.name != newItem.name) {
+            payload += PokemonPayload.Name(newItem.name)
+        }
+        //if (oldItem.url != newItem.url) diff["url"] = newItem.url
+        if(oldItem.url != newItem.url){
+            payload += PokemonPayload.Url(newItem.url)
+        }
 
         var typeHasChanges = false
         oldItem.types?.zip(newItem.types.orEmpty())?.forEach { (oldType, newType) ->
@@ -61,7 +69,8 @@ class PokemonListDiffCallback (
         }
 
         if (typeHasChanges) {
-            diff["types"] = newItem.types
+            //diff["types"] = newItem.types
+            payload += PokemonPayload.Types(newItem.types.orEmpty())
         }
 
         var spriteHasChanges = false
@@ -78,9 +87,10 @@ class PokemonListDiffCallback (
         }
 
         if(spriteHasChanges) {
-            diff["sprites"] = newItem.sprites
+            //diff["sprites"] = newItem.sprites
+            payload += PokemonPayload.Sprites(newItem.sprites.orEmpty())
         }
 
-        return if (diff.isEmpty()) null else diff
+        return payload.ifEmpty { null }
     }
 }

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.maubocanegra.pokedex.databinding.ItemPokemonBinding
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonUiEntity
+import com.maubocanegra.pokedex.pokemonrecyclerview.view.payloadmapper.PokemonPayload
 
 class PokemonRecyclerViewAdapter(
     private val onItemAttached: (Int) -> Unit,
@@ -20,7 +21,7 @@ class PokemonRecyclerViewAdapter(
     }
 
     override fun getItemId(position: Int): Long {
-        return items[position].id?.toLong() ?: RecyclerView.NO_ID
+        return items[position].id.toLong()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PokemonItemViewHolder {
@@ -47,8 +48,8 @@ class PokemonRecyclerViewAdapter(
         if(payloads.isEmpty()){
             super.onBindViewHolder(holder, position, payloads)
         } else {
-            val diffMap = payloads[0] as Map<String, Any?>
-            holder.bindPartial(diffMap)
+            val typedPokemonPayload = payloads.filterIsInstance<PokemonPayload>()
+            holder.bindPartial(typedPokemonPayload)
         }
     }
 

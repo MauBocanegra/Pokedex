@@ -1,15 +1,13 @@
 package com.maubocanegra.pokedex.pokemonrecyclerview.view.recyclerview
 
-import android.text.Html
-import android.text.Html.FROM_HTML_MODE_LEGACY
 import androidx.recyclerview.widget.RecyclerView
 import com.maubocanegra.pokedex.R
 import com.maubocanegra.pokedex.databinding.ItemPokemonBinding
-import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonTypesUiEntity
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonUiEntity
+import com.maubocanegra.pokedex.pokemonrecyclerview.view.formatter.createSpannable
 import com.maubocanegra.pokedex.pokemonrecyclerview.view.formatter.formatPokedexId
 import com.maubocanegra.pokedex.pokemonrecyclerview.view.formatter.formatPokemonName
-import com.maubocanegra.pokedex.pokemonrecyclerview.view.formatter.formatPokemonType
+import com.maubocanegra.pokedex.pokemonrecyclerview.view.payloadmapper.PokemonPayload
 
 /**
  * UI Formatters can be found at @see PokemonUiFormatter
@@ -19,17 +17,19 @@ class PokemonItemViewHolder(
     private val onItemClicked: (name: String, url: String) -> Unit,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bindPartial(diff: Map<String, Any?>){
-        diff.forEach { (key, value) ->
-            when(key){
-                "name" -> binding.pokemonName.text = (value as? String).formatPokemonName()
-                "types" -> {
-                    binding.pokemonType.text = Html.fromHtml(
-                        (value as List<PokemonTypesUiEntity>).formatPokemonType(
-                            binding.root.context.getString(R.string.placeholder_pokemon_type)
-                        ),
-                        FROM_HTML_MODE_LEGACY
-                    )
+    fun bindPartial(diff: List<PokemonPayload>){
+        if(diff.isNotEmpty()){
+            diff.forEach { pokemonPayload ->
+                when(pokemonPayload){
+                    is PokemonPayload.Name ->
+                        binding.pokemonName.text =
+                            pokemonPayload.name.formatPokemonName()
+                    is PokemonPayload.Types -> {
+                        binding.pokemonType.text = pokemonPayload.types.createSpannable()
+                    }
+                    is PokemonPayload.Url, is  PokemonPayload.Sprites -> {
+                        // No visible changes yet
+                    }
                 }
             }
         }
@@ -41,12 +41,7 @@ class PokemonItemViewHolder(
             binding.root.context.getString(R.string.placeholder_pokedex_id)
         )
 
-        pokemonType.text = Html.fromHtml(
-            pokemon.types?.formatPokemonType(
-                binding.root.context.getString(R.string.placeholder_pokemon_type)
-            ) ?: binding.root.context.getString(R.string.placeholder_pokemon_type),
-            FROM_HTML_MODE_LEGACY
-        )
+        binding.pokemonType.text = pokemon.types?.createSpannable()
 
         // placeholder for now
         pokemonImage.setImageResource(android.R.color.transparent)

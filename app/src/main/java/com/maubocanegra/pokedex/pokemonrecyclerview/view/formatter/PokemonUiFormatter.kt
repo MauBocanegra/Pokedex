@@ -1,8 +1,12 @@
 package com.maubocanegra.pokedex.pokemonrecyclerview.view.formatter
 
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonTypesUiEntity
 import java.util.Locale
 import androidx.core.graphics.toColorInt
+import androidx.core.text.toSpannable
 
 fun String.formatPokedexId(placeholder: String): String = when(this.length){
     1 -> "#000$this"
@@ -18,36 +22,25 @@ fun String?.formatPokemonName(): String = this?.replaceFirstChar {
         it.toString()
 } ?: "MissingNo. ##"
 
-fun List<PokemonTypesUiEntity>.formatPokemonType(
-    placeholder: String
-): String = this.fold(""){ acc, pokemonTypesUiEntity ->
-    "$acc<font color=${pokemonTypesUiEntity.type.name.getTypeColorString()}>${pokemonTypesUiEntity.type.name.uppercase()}</font> "
-}.ifEmpty { placeholder }
-
-fun String.getTypeColorInt(): Int = when (this) {
-    "normal" -> "#aab09f".toColorInt()
-    "fighting" -> "#cb5f48".toColorInt()
-    "flying" -> "#7da6de".toColorInt()
-    "poison" -> "#b468b7".toColorInt()
-    "ground" -> "#cc9f4f".toColorInt()
-    "rock" -> "#b2a061".toColorInt()
-    "bug" -> "#94bc4a".toColorInt()
-    "ghost" -> "#846ab6".toColorInt()
-    "steel" -> "#89a1b0".toColorInt()
-    "fire" -> "#ea7a3c".toColorInt()
-    "water" -> "#539ae2".toColorInt()
-    "grass" -> "#71c558".toColorInt()
-    "electric" -> "#e5c531".toColorInt()
-    "psychic" -> "e5709b".toColorInt()
-    "ice" -> "#70cbd4".toColorInt()
-    "dragon" -> "#6a7baf".toColorInt()
-    "dark" -> "#736c75".toColorInt()
-    "fairy" -> "#e397d1".toColorInt()
-    "stellar" -> "#7da6de".toColorInt()
-    "unknown" -> "#81a596".toColorInt()
-    "shadow" -> "#808080".toColorInt()
-    else -> "#808080".toColorInt()
+fun List<PokemonTypesUiEntity>.createSpannable(): Spannable{
+    val spannableStringBuilder = SpannableStringBuilder()
+    this.forEach { pokemonTypeUiEntity ->
+        val type = pokemonTypeUiEntity.type.name.uppercase()
+        spannableStringBuilder.append("$type ")
+        println(type.lowercase())
+        spannableStringBuilder.setSpan(
+            ForegroundColorSpan(
+                type.lowercase().parseTypeToIntColor()
+            ),
+            spannableStringBuilder.indexOf(type),
+            spannableStringBuilder.indexOf(type)+type.length,
+            Spannable.SPAN_EXCLUSIVE_INCLUSIVE,
+        )
+    }
+    return spannableStringBuilder.toSpannable()
 }
+
+fun String.parseTypeToIntColor(): Int = this.getTypeColorString().toColorInt()
 
 fun String.getTypeColorString(): String = when (this) {
     "normal" -> "#aab09f"
@@ -63,7 +56,7 @@ fun String.getTypeColorString(): String = when (this) {
     "water" -> "#539ae2"
     "grass" -> "#71c558"
     "electric" -> "#e5c531"
-    "psychic" -> "e5709b"
+    "psychic" -> "#e5709b"
     "ice" -> "#70cbd4"
     "dragon" -> "#6a7baf"
     "dark" -> "#736c75"
