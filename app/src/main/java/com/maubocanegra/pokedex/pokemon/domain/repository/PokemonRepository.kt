@@ -1,9 +1,9 @@
-package com.maubocanegra.pokedex.pokemonlist.domain.repository
+package com.maubocanegra.pokedex.pokemon.domain.repository
 
 import androidx.paging.PagingData
-import com.maubocanegra.pokedex.pokemondetail.domain.model.PokemonDetailResult
 import com.maubocanegra.pokedex.core.domain.model.PokemonListItemModel
 import com.maubocanegra.pokedex.core.network.util.APIResult
+import com.maubocanegra.pokedex.pokemondetail.domain.model.PokemonDetailResult
 import kotlinx.coroutines.flow.Flow
 
 interface PokemonRepository {

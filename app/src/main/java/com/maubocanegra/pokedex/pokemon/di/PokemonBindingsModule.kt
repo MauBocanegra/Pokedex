@@ -1,7 +1,7 @@
 package com.maubocanegra.pokedex.pokemon.di
 
 import com.maubocanegra.pokedex.pokemon.data.repository.PokemonRepositoryImpl
-import com.maubocanegra.pokedex.pokemonlist.domain.repository.PokemonRepository
+import com.maubocanegra.pokedex.pokemon.domain.repository.PokemonRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

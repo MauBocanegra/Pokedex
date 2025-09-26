@@ -8,10 +8,12 @@ import com.maubocanegra.pokedex.pokemonlist.domain.model.UIState
 import com.maubocanegra.pokedex.pokemonrecyclerview.domain.uistate.PokemonRecyclerViewUiState
 import com.maubocanegra.pokedex.pokemonrecyclerview.domain.usecase.DeterminePokemonItemFetchingUseCase
 import com.maubocanegra.pokedex.pokemonrecyclerview.domain.usecase.GetPokemonRecyclerViewUiStateUseCase
+import com.maubocanegra.pokedex.pokemonrecyclerview.domain.usecase.LoadPokemonItemImageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,7 +21,8 @@ import javax.inject.Inject
 class PokemonRecyclerViewViewModel @Inject constructor(
     private val getPokemonRecyclerViewUiStateUseCase: GetPokemonRecyclerViewUiStateUseCase,
     private val pokemonDetailFetchBeaconUseCase: DeterminePokemonItemFetchingUseCase,
-    private val pokemonDetailUseCase: GetPokemonDetailUseCase
+    private val pokemonDetailUseCase: GetPokemonDetailUseCase,
+    private val loadPokemonItemImageUseCase: LoadPokemonItemImageUseCase,
 ): ViewModel(){
 
     private val _uiState = MutableStateFlow(
@@ -34,6 +37,7 @@ class PokemonRecyclerViewViewModel @Inject constructor(
     init {
         loadInitialPokemonList()
         listenForPokemonItemDetailRequest()
+        mirrorImageStates()
     }
 
     private fun loadInitialPokemonList() {
@@ -89,6 +93,33 @@ class PokemonRecyclerViewViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    // ---------- Images: mirror use-case state and delegate events ----------
+
+    private fun mirrorImageStates() {
+        viewModelScope.launch {
+            loadPokemonItemImageUseCase.imageStateById.collectLatest { map ->
+                _uiState.value = _uiState.value.copy(imageStateById = map)
+            }
+        }
+    }
+
+    fun onItemBoundForImage(pokemonId: Int, frontDefaultUrl: String) {
+        loadPokemonItemImageUseCase.onItemBound(
+            scope = viewModelScope,
+            itemId = pokemonId,
+            pngUrl = frontDefaultUrl
+        )
+    }
+
+    fun onItemRecycledForImage(pokemonId: Int) {
+        loadPokemonItemImageUseCase.onItemRecycled(pokemonId)
+    }
+
+    override fun onCleared() {
+        loadPokemonItemImageUseCase.clearAll()
+        super.onCleared()
     }
 
     // ---------------- Pokemon Detail ----------------

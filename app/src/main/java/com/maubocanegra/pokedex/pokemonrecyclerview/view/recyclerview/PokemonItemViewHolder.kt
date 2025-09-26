@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.maubocanegra.pokedex.R
 import com.maubocanegra.pokedex.databinding.ItemPokemonBinding
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonUiEntity
+import com.maubocanegra.pokedex.pokemonrecyclerview.domain.uistate.PokemonImageUiState
 import com.maubocanegra.pokedex.pokemonrecyclerview.view.formatter.createSpannable
 import com.maubocanegra.pokedex.pokemonrecyclerview.view.formatter.formatPokedexId
 import com.maubocanegra.pokedex.pokemonrecyclerview.view.formatter.formatPokemonName
@@ -44,7 +45,7 @@ class PokemonItemViewHolder(
         binding.pokemonType.text = pokemon.types?.createSpannable()
 
         // placeholder for now
-        pokemonImage.setImageResource(android.R.color.transparent)
+        //pokemonImage.setImageResource(android.R.color.transparent)
 
         val name = pokemon.name
         val url = pokemon.url
@@ -54,4 +55,24 @@ class PokemonItemViewHolder(
             }
         }
     }}
+
+    /** Render-only. Adapter calls this when image state changes. */
+    fun renderImage(state: PokemonImageUiState?) {
+        val imageView = binding.pokemonImage
+        when (state) {
+            is PokemonImageUiState.Ready -> imageView.setImageBitmap(state.bitmap)
+            is PokemonImageUiState.Error -> imageView.setImageResource(R.drawable.pokeballart2)
+            PokemonImageUiState.Loading, PokemonImageUiState.Idle, null -> {
+                // Set placeholder only if there is no bitmap already shown
+                val hasBitmap = imageView.drawable is android.graphics.drawable.BitmapDrawable
+                if (!hasBitmap) imageView.setImageResource(R.drawable.pokeballart1)
+            }
+        }
+    }
+
+    /** Optional: call from onViewRecycled to avoid stale bitmaps. */
+    fun clear() {
+        binding.pokemonImage.setImageDrawable(null)
+        binding.root.setOnClickListener(null)
+    }
 }

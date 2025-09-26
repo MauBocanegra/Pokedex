@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
     implementation(libs.coil.compose)
+    implementation(libs.volley)
 
     // UI RecyclerView
     implementation(libs.androidx.recyclerview)

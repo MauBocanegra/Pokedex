@@ -1,15 +1,21 @@
 package com.maubocanegra.pokedex.pokemondetail.data.mapper
 
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.CustomPokemonAPIResource
+import com.maubocanegra.pokedex.pokemondetail.domain.entity.OtherSpritesUiEntity
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonAbilityUiEntity
+import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonDreamWorldSpriteUIEntity
+import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonHomeSpriteUIEntity
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonMoveUiEntity
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonSpriteUiEntity
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonStatUiEntity
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonTypesUiEntity
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonUiEntity
 import com.maubocanegra.pokedex.pokemonlist.data.network.model.AbilityResponse
+import com.maubocanegra.pokedex.pokemonlist.data.network.model.DreamWorldSprite
+import com.maubocanegra.pokedex.pokemonlist.data.network.model.HomeSprite
 import com.maubocanegra.pokedex.pokemonlist.data.network.model.MoveResponse
 import com.maubocanegra.pokedex.pokemonlist.data.network.model.NamedAPIResource
+import com.maubocanegra.pokedex.pokemonlist.data.network.model.OtherSpritesResponse
 import com.maubocanegra.pokedex.pokemonlist.data.network.model.PokemonResponse
 import com.maubocanegra.pokedex.pokemonlist.data.network.model.SpritesResponse
 import com.maubocanegra.pokedex.pokemonlist.data.network.model.StatResponse
@@ -28,7 +34,7 @@ fun PokemonResponse.toUiEntity(): PokemonUiEntity {
         forms = this.forms?.map { it.toCustomResource() },
         locationAreaEncounters = this.locationAreaEncounters,
         moves = this.moves?.map { it.toMoveUiEntity() },
-        sprites = this.sprites?.toSpriteUiEntity()?.let { listOf(it) },
+        sprites = this.sprites?.toSpriteUiEntity(),
         stats = this.stats?.map { it.toStatUiEntity() },
         types = this.types?.map { it.toTypeUiEntity() } ?: emptyList(),
         officialArtwork = this.sprites?.other?.officialArtwork?.frontDefault,
@@ -78,6 +84,30 @@ private fun SpritesResponse.toSpriteUiEntity(): PokemonSpriteUiEntity {
     return PokemonSpriteUiEntity(
         backDefault = this.backDefault,
         backShiny = this.backShiny,
-        frontDefault = this.frontDefault
+        frontDefault = this.frontDefault,
+        other = this.other?.toOtherSpriteUiEntity(),
+    )
+}
+
+private fun OtherSpritesResponse
+    .toOtherSpriteUiEntity(): OtherSpritesUiEntity {
+    return OtherSpritesUiEntity(
+        homeSprites = this.home?.toHomeSpriteUiEntity(),
+        dreamWorldSprites = this.dreamWorld?.toDreamWorldSpriteUiEntity(),
+    )
+}
+
+private fun HomeSprite.toHomeSpriteUiEntity(): PokemonHomeSpriteUIEntity {
+    return PokemonHomeSpriteUIEntity(
+        homeFrontDefault = this.frontDefault,
+        homeFrontFemale = this.frontFemale,
+    )
+}
+
+private fun DreamWorldSprite.toDreamWorldSpriteUiEntity(
+): PokemonDreamWorldSpriteUIEntity {
+    return PokemonDreamWorldSpriteUIEntity(
+        dreamWorldFrontDefault = this.frontDefault,
+        dreamWorldFrontFemale = this.frontFemale,
     )
 }

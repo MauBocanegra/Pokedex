@@ -2,7 +2,7 @@ package com.maubocanegra.pokedex.pokemonrecyclerview.domain.usecase
 
 import com.maubocanegra.pokedex.core.domain.model.PokemonListItemModel
 import com.maubocanegra.pokedex.core.network.util.APIResult
-import com.maubocanegra.pokedex.pokemonlist.domain.repository.PokemonRepository
+import com.maubocanegra.pokedex.pokemon.domain.repository.PokemonRepository
 import com.maubocanegra.pokedex.pokemonrecyclerview.domain.mapper.mapPokemonRecyclerViewResponseToUiState
 import com.maubocanegra.pokedex.pokemonrecyclerview.domain.uistate.PokemonRecyclerViewUiState
 import kotlinx.coroutines.Dispatchers

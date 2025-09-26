@@ -66,13 +66,13 @@
         <!-- Pokemon image on the right side -->
             <ImageView
                 android:id="@+id/pokemon_image"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
                 android:contentDescription="@string/pokemon_image_description"
                 android:scaleType="fitCenter"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/text_container"
                 app:layout_constraintEnd_toStartOf="@+id/progressBar2"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@+id/text_container" />
 
             <ProgressBar
                 android:id="@+id/progressBar2"

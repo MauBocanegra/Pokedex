@@ -10,6 +10,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.maubocanegra.pokedex.databinding.FragmentPokemonRecyclerViewBinding
+import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonUiEntity
+import com.maubocanegra.pokedex.pokemonrecyclerview.domain.uistate.PokemonImageUiState
+import com.maubocanegra.pokedex.pokemonrecyclerview.view.payloadmapper.PokemonPayload
 import com.maubocanegra.pokedex.pokemonrecyclerview.view.recyclerview.PokemonRecyclerViewAdapter
 import com.maubocanegra.pokedex.pokemonrecyclerview.view.recyclerview.PokemonRecyclerViewViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,6 +31,10 @@ class PokemonRecyclerViewFragment : Fragment() {
     private lateinit var pokemonAdapter: PokemonRecyclerViewAdapter
     private var _binding: FragmentPokemonRecyclerViewBinding? = null
     private val binding get() = _binding!!
+
+    private var previousImageStateById: Map<Int, PokemonImageUiState> = emptyMap()
+    private val pendingImageUpdates = linkedSetOf<Int>()
+    private var payloadDrainPosted = false
 
     companion object {
         fun newInstance(): PokemonRecyclerViewFragment {
@@ -65,6 +72,16 @@ class PokemonRecyclerViewFragment : Fragment() {
             onItemDetached = { pokemonId ->
                 pokemonViewModel.pokemonItemDetachesFromScreen(pokemonId)
             },
+            onImageBindRequested = { id, url ->
+                pokemonViewModel.onItemBoundForImage(id, url)
+           },
+            onImageRecycled = { id ->
+                pokemonViewModel.onItemRecycledForImage(id)
+            },
+            frontDefaultUrlFor = ::extractHomeFrontDefault,
+            imageStateForId = {
+                id -> pokemonViewModel.uiState.value.imageStateById[id]
+            }
         )
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -101,6 +118,19 @@ class PokemonRecyclerViewFragment : Fragment() {
                 pokemonAdapter.submitList(state.pokemonList)
                 //pokemonAdapter.appendList(state.pokemonList)
                 // Handle state.uiState (LOADING, FAILED) here
+
+                // image payload updates
+                val current = state.imageStateById
+                current.forEach { (id, newState) ->
+                    val old = previousImageStateById[id]
+                    if (old != newState) {
+                        val index = state.pokemonList.indexOfFirst { it.id == id }
+                        if (index != -1) {
+                            enqueueImagePayload(index)
+                        }
+                    }
+                }
+                previousImageStateById = current
             }
         }
     }
@@ -108,5 +138,31 @@ class PokemonRecyclerViewFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // HomeSprite.frontDefault extractor
+    private fun extractHomeFrontDefault(pokemon: PokemonUiEntity): String {
+        return pokemon.sprites?.other?.homeSprites?.homeFrontDefault.takeIf {
+            !it.isNullOrBlank() } ?: ""
+    }
+
+    // Defer + batch to avoid "computing layout" exceptions
+    private fun enqueueImagePayload(index: Int) {
+        pendingImageUpdates += index
+        if (payloadDrainPosted) return
+        payloadDrainPosted = true
+        binding.recyclerView.post {
+            payloadDrainPosted = false
+            if (pendingImageUpdates.isEmpty()) return@post
+            val toUpdate = pendingImageUpdates.toList()
+            pendingImageUpdates.clear()
+            val lastIndex = pokemonAdapter.itemCount - 1
+            toUpdate.forEach { i ->
+                if (i in 0..lastIndex) {
+                    // Reuse existing payload type as a signal
+                    pokemonAdapter.notifyItemChanged(i, PokemonPayload.Sprites(null))
+                }
+            }
+        }
     }
 }

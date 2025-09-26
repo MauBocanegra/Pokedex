@@ -15,7 +15,7 @@ import com.maubocanegra.pokedex.pokemon.data.persistence.mapper.toDBEntity
 import com.maubocanegra.pokedex.pokemon.data.persistence.mapper.toListDBEntity
 import com.maubocanegra.pokedex.pokemon.data.persistence.mapper.toModel
 import com.maubocanegra.pokedex.pokemon.data.persistence.mapper.toUiEntity
-import com.maubocanegra.pokedex.pokemonlist.domain.repository.PokemonRepository
+import com.maubocanegra.pokedex.pokemon.domain.repository.PokemonRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
@@ -25,7 +25,7 @@ class PokemonRepositoryImpl @Inject constructor(
     private val pokemonApiService: PokemonApiService,
     private val pokemonListDao: PokemonListDao,
     private val pokemonDetailDao: PokemonDetailDao
-): PokemonRepository{
+): PokemonRepository {
 
     override fun getPokemonPager(pageSize: Int): Flow<PagingData<PokemonListItemModel>> {
         return Pager(

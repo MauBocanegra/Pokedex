@@ -63,17 +63,6 @@ object PokemonTypeConverters {
     fun toMoves(jsonString: String?): List<PokemonMoveUiEntity>? =
         jsonString?.let { json.decodeFromString(it) }
 
-    /**----- Pokemon Sprites -----*/
-    @TypeConverter
-    @JvmStatic
-    fun fromSprites(sprites: List<PokemonSpriteUiEntity>?): String? =
-        sprites?.let { json.encodeToString(it) }
-
-    @TypeConverter
-    @JvmStatic
-    fun toSprites(jsonString: String?): List<PokemonSpriteUiEntity>? =
-        jsonString?.let { json.decodeFromString(it) }
-
     /**----- Pokemon Stats -----*/
     @TypeConverter
     @JvmStatic

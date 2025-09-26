@@ -2,7 +2,6 @@ package com.maubocanegra.pokedex.pokemonrecyclerview.domain.mapper
 
 import com.maubocanegra.pokedex.core.domain.model.PokemonListItemModel
 import com.maubocanegra.pokedex.core.network.util.APIResult
-import com.maubocanegra.pokedex.pokemon.data.persistence.converter.PokemonTypeConverters.toSprites
 import com.maubocanegra.pokedex.pokemon.data.persistence.converter.PokemonTypeConverters.toTypesList
 import com.maubocanegra.pokedex.pokemonrecyclerview.domain.uistate.PokemonRecyclerViewUiState
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonUiEntity
@@ -33,7 +32,7 @@ fun mapPokemonRecyclerViewResponseToUiState(
                     forms = null,
                     locationAreaEncounters = null,
                     moves = null,
-                    sprites = toSprites(item.frontSpriteUrl),
+                    sprites = null,
                     stats = null,
                     types = toTypesList(item.types),
                     officialArtwork = null,

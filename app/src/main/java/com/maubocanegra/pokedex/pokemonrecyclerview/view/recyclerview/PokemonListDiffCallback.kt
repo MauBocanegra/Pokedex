@@ -74,21 +74,22 @@ class PokemonListDiffCallback (
         }
 
         var spriteHasChanges = false
-        oldItem.sprites?.zip(newItem.sprites.orEmpty())?.forEach { (oldSprite, newSprite) ->
-            val frontSpriteHasChange =
-                oldSprite.frontDefault != newSprite.frontDefault
-            val backSpriteHasChanged =
-                oldSprite.backDefault != newSprite.backDefault
-            val shinySpriteHasChanged =
-                oldSprite.backShiny != newSprite.backShiny
-            if(frontSpriteHasChange || backSpriteHasChanged || shinySpriteHasChanged) {
-                spriteHasChanges = true
-            }
+        val frontSpriteHasChange =
+            oldItem.sprites?.frontDefault != newItem.sprites?.frontDefault
+        val backSpriteHasChanged =
+            oldItem.sprites?.backDefault != newItem.sprites?.backDefault
+        val shinySpriteHasChanged =
+            oldItem.sprites?.backShiny != newItem.sprites?.backShiny
+        val homeSpriteFrontDefaultHasChanged =
+            oldItem.sprites?.other?.homeSprites?.homeFrontDefault !=
+                    newItem.sprites?.other?.homeSprites?.homeFrontDefault
+        if(frontSpriteHasChange || backSpriteHasChanged || shinySpriteHasChanged ||
+            homeSpriteFrontDefaultHasChanged) {
+            spriteHasChanges = true
         }
 
         if(spriteHasChanges) {
-            //diff["sprites"] = newItem.sprites
-            payload += PokemonPayload.Sprites(newItem.sprites.orEmpty())
+            payload += PokemonPayload.Sprites(newItem.sprites)
         }
 
         return payload.ifEmpty { null }

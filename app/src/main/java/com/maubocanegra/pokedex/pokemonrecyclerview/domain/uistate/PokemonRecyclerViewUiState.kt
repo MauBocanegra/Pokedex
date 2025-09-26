@@ -8,6 +8,8 @@ data class PokemonRecyclerViewUiState(
     val uiState: UIState = UIState.LOADING,
     val errorMessage: String? = null,
 
+    val imageStateById: Map<Int, PokemonImageUiState> = emptyMap(),
+
     // Pagination-related
     val currentOffset: Int = 0,
     val pageSize: Int = 20,

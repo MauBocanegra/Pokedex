@@ -4,7 +4,7 @@ import com.maubocanegra.pokedex.pokemondetail.domain.mapper.toPokemonDetailUiSta
 import com.maubocanegra.pokedex.pokemondetail.domain.model.PokemonDetailResult
 import com.maubocanegra.pokedex.pokemondetail.domain.uistate.PokemonDetailUiState
 import com.maubocanegra.pokedex.pokemonlist.domain.model.UIState
-import com.maubocanegra.pokedex.pokemonlist.domain.repository.PokemonRepository
+import com.maubocanegra.pokedex.pokemon.domain.repository.PokemonRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

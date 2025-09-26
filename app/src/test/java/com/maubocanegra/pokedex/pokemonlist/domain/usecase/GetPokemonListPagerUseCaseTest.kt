@@ -3,7 +3,7 @@ package com.maubocanegra.pokedex.pokemonlist.domain.usecase
 import androidx.paging.AsyncPagingDataDiffer
 import androidx.paging.PagingData
 import com.maubocanegra.pokedex.core.domain.model.PokemonListItemModel
-import com.maubocanegra.pokedex.pokemonlist.domain.repository.PokemonRepository
+import com.maubocanegra.pokedex.pokemon.domain.repository.PokemonRepository
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -53,8 +53,8 @@ class GetPokemonListPagerUseCaseTest {
     @Test
     fun `invoke returns correct PagingData items`() = runTest {
         val items = listOf(
-            PokemonListItemModel("bulbasaur", "url1"),
-            PokemonListItemModel("ivysaur", "url2")
+            PokemonListItemModel(1,"bulbasaur", "url1"),
+            PokemonListItemModel(2,"ivysaur", "url2")
         )
         val pagingData = PagingData.from(items)
 

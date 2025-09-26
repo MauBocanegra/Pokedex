@@ -6,12 +6,18 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.maubocanegra.pokedex.databinding.ItemPokemonBinding
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonUiEntity
+import com.maubocanegra.pokedex.pokemonrecyclerview.domain.uistate.PokemonImageUiState
 import com.maubocanegra.pokedex.pokemonrecyclerview.view.payloadmapper.PokemonPayload
 
 class PokemonRecyclerViewAdapter(
     private val onItemAttached: (Int) -> Unit,
     private val onItemDetached: (Int) -> Unit,
     private val onItemClicked: (name: String, url: String) -> Unit,
+
+    private val onImageBindRequested: (pokemonId: Int, frontDefaultUrl: String) -> Unit,
+    private val onImageRecycled: (pokemonId: Int) -> Unit,
+    private val frontDefaultUrlFor: (PokemonUiEntity) -> String,
+    private val imageStateForId: (pokemonId: Int) -> PokemonImageUiState?
 ): RecyclerView.Adapter<PokemonItemViewHolder>() {
 
     private val items: MutableList<PokemonUiEntity> = mutableListOf()
@@ -37,7 +43,13 @@ class PokemonRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: PokemonItemViewHolder, position: Int) {
-        holder.bind(items[position])
+        val item = items[position]
+        holder.bind(item)
+
+        holder.renderImage(imageStateForId(item.id))
+
+        val frontDefaultUrl = frontDefaultUrlFor(item)
+        onImageBindRequested(item.id, frontDefaultUrl)
     }
 
     override fun onBindViewHolder(
@@ -50,6 +62,9 @@ class PokemonRecyclerViewAdapter(
         } else {
             val typedPokemonPayload = payloads.filterIsInstance<PokemonPayload>()
             holder.bindPartial(typedPokemonPayload)
+
+            val item = items[position]
+            holder.renderImage(imageStateForId(item.id))
         }
     }
 
@@ -70,6 +85,17 @@ class PokemonRecyclerViewAdapter(
         if(position != RecyclerView.NO_POSITION && !items[position].name.isNullOrEmpty()){
             onItemDetached(items[position].id)
         }
+    }
+
+    override fun onViewRecycled(holder: PokemonItemViewHolder) {
+        val position = holder.bindingAdapterPosition
+        if (position != RecyclerView.NO_POSITION) {
+            val id = items[position].id
+            // cancel image work and set Idle
+            onImageRecycled(id)
+        }
+        holder.clear()
+        super.onViewRecycled(holder)
     }
 
     fun submitList(newList: List<PokemonUiEntity>) {

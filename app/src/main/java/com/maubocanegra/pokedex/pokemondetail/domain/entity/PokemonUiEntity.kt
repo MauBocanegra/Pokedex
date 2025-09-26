@@ -15,7 +15,7 @@ data class PokemonUiEntity(
     val forms: List<CustomPokemonAPIResource>?,
     val locationAreaEncounters: String?,
     val moves: List<PokemonMoveUiEntity>?,
-    val sprites: List<PokemonSpriteUiEntity>?,
+    val sprites: PokemonSpriteUiEntity?,
     val stats: List<PokemonStatUiEntity>?,
     val types: List<PokemonTypesUiEntity>?,
     val officialArtwork: String?,
@@ -45,6 +45,29 @@ data class PokemonSpriteUiEntity(
     val backDefault: String? = null,
     val backShiny: String? = null,
     val frontDefault: String? = null,
+    val backFemale: String? = null,
+    val backShinyFemale: String? = null,
+    val frontFemale: String? = null,
+    val frontShiny: String? = null,
+    val other: OtherSpritesUiEntity? = null,
+)
+
+@Serializable
+data class OtherSpritesUiEntity(
+    val homeSprites: PokemonHomeSpriteUIEntity? = null,
+    val dreamWorldSprites: PokemonDreamWorldSpriteUIEntity? = null,
+)
+
+@Serializable
+data class PokemonDreamWorldSpriteUIEntity(
+    val dreamWorldFrontDefault: String? = null,
+    val dreamWorldFrontFemale: String? = null,
+)
+
+@Serializable
+data class PokemonHomeSpriteUIEntity(
+    val homeFrontDefault: String? = null,
+    val homeFrontFemale: String? = null,
 )
 
 @Serializable
