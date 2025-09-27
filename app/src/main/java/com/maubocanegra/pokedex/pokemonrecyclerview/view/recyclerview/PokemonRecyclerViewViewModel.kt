@@ -5,15 +5,25 @@ import androidx.lifecycle.viewModelScope
 import com.maubocanegra.pokedex.pokemon.domain.usecase.GetPokemonDetailUseCase
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonUiEntity
 import com.maubocanegra.pokedex.pokemonlist.domain.model.UIState
+import com.maubocanegra.pokedex.pokemonrecyclerview.domain.uistate.PokemonDetailItemState
 import com.maubocanegra.pokedex.pokemonrecyclerview.domain.uistate.PokemonRecyclerViewUiState
 import com.maubocanegra.pokedex.pokemonrecyclerview.domain.usecase.DeterminePokemonItemFetchingUseCase
 import com.maubocanegra.pokedex.pokemonrecyclerview.domain.usecase.GetPokemonRecyclerViewUiStateUseCase
 import com.maubocanegra.pokedex.pokemonrecyclerview.domain.usecase.LoadPokemonItemImageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -105,14 +115,6 @@ class PokemonRecyclerViewViewModel @Inject constructor(
         }
     }
 
-    fun onItemBoundForImage(pokemonId: Int, frontDefaultUrl: String) {
-        loadPokemonItemImageUseCase.onItemBound(
-            scope = viewModelScope,
-            itemId = pokemonId,
-            pngUrl = frontDefaultUrl
-        )
-    }
-
     fun onItemRecycledForImage(pokemonId: Int) {
         loadPokemonItemImageUseCase.onItemRecycled(pokemonId)
     }
@@ -127,12 +129,70 @@ class PokemonRecyclerViewViewModel @Inject constructor(
     private fun listenForPokemonItemDetailRequest(){
         viewModelScope.launch {
             pokemonDetailFetchBeaconUseCase.pokemonAttachmentState.collect{ state ->
-                pokemonDetailUseCase(state.pokemonId)
-                    .collect { pokemonDetail ->
-                        if(pokemonDetail.pokemon!=null){
-                            updatePokemonInList(pokemonDetail.pokemon)
+
+                _uiState.value = _uiState.value.copy(
+                    detailStateById = _uiState.value.detailStateById
+                        .toMutableMap()
+                        .apply {
+                            put(
+                                state.pokemonId,
+                                PokemonDetailItemState.Loading
+                            )
                         }
+                )
+
+                val sharedFlow = pokemonDetailUseCase(state.pokemonId).shareIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.Eagerly,
+                    replay = 1
+                )
+
+                // Update each pokemon detail in list
+                sharedFlow
+                    .map { it.pokemon }
+                    .filterNotNull()
+                    .onEach { pokemon ->
+                        updatePokemonInList(pokemon)
+                        _uiState.value = _uiState.value.copy(
+                            detailStateById = _uiState.value.detailStateById
+                                .toMutableMap().apply {
+                                    put(
+                                        state.pokemonId,
+                                        PokemonDetailItemState.Ready
+                                    )
+                                }
+                        )
                     }
+                    .catch {
+                        _uiState.value = _uiState.value.copy(
+                            detailStateById = _uiState.value.detailStateById
+                                .toMutableMap().apply {
+                                    put(
+                                        state.pokemonId,
+                                        PokemonDetailItemState.Error
+                                    )
+                                }
+                        )
+                    }
+                    .launchIn(viewModelScope)
+
+                sharedFlow
+                    .map { detail ->
+                        detail.pokemon?.sprites?.other?.homeSprites?.homeFrontDefault
+                            ?.takeIf { it.isNotBlank() }
+                            ?: detail.pokemon?.sprites?.frontDefault?.takeIf { it.isNotBlank() }
+                    }
+                    .filterNotNull()
+                    .distinctUntilChanged()
+                    .take(1)
+                    .onEach { imageUrl ->
+                        loadPokemonItemImageUseCase.onItemBound(
+                            scope = viewModelScope,
+                            itemId = state.pokemonId,
+                            pngUrl = imageUrl
+                        )
+                    }
+                    .launchIn(viewModelScope)
             }
         }
     }

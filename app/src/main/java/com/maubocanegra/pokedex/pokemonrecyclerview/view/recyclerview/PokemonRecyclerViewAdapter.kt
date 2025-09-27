@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.maubocanegra.pokedex.databinding.ItemPokemonBinding
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonUiEntity
+import com.maubocanegra.pokedex.pokemonrecyclerview.domain.uistate.PokemonDetailItemState
 import com.maubocanegra.pokedex.pokemonrecyclerview.domain.uistate.PokemonImageUiState
 import com.maubocanegra.pokedex.pokemonrecyclerview.view.payloadmapper.PokemonPayload
 
@@ -13,11 +14,10 @@ class PokemonRecyclerViewAdapter(
     private val onItemAttached: (Int) -> Unit,
     private val onItemDetached: (Int) -> Unit,
     private val onItemClicked: (name: String, url: String) -> Unit,
-
-    private val onImageBindRequested: (pokemonId: Int, frontDefaultUrl: String) -> Unit,
     private val onImageRecycled: (pokemonId: Int) -> Unit,
-    private val frontDefaultUrlFor: (PokemonUiEntity) -> String,
-    private val imageStateForId: (pokemonId: Int) -> PokemonImageUiState?
+
+    private val imageStateForId: (pokemonId: Int) -> PokemonImageUiState?,
+    private val detailStateForId: (Int) -> PokemonDetailItemState?
 ): RecyclerView.Adapter<PokemonItemViewHolder>() {
 
     private val items: MutableList<PokemonUiEntity> = mutableListOf()
@@ -44,12 +44,13 @@ class PokemonRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: PokemonItemViewHolder, position: Int) {
         val item = items[position]
-        holder.bind(item)
+        holder.bind(
+            item,
+            imageStateForId(item.id)
+        )
 
+        holder.renderDetail(detailStateForId(item.id))
         holder.renderImage(imageStateForId(item.id))
-
-        val frontDefaultUrl = frontDefaultUrlFor(item)
-        onImageBindRequested(item.id, frontDefaultUrl)
     }
 
     override fun onBindViewHolder(
@@ -64,6 +65,7 @@ class PokemonRecyclerViewAdapter(
             holder.bindPartial(typedPokemonPayload)
 
             val item = items[position]
+            holder.renderDetail(detailStateForId(item.id))
             holder.renderImage(imageStateForId(item.id))
         }
     }

@@ -45,7 +45,6 @@ class LoadPokemonItemImageUseCase @Inject constructor(
 
     fun onItemRecycled(itemId: Int) {
         activeJobsByItemId.remove(itemId)?.cancel()
-        //setState(itemId, PokemonImageUiState.Idle)
     }
 
     fun clearAll() {

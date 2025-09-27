@@ -1,9 +1,11 @@
 package com.maubocanegra.pokedex.pokemonrecyclerview.view.recyclerview
 
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.maubocanegra.pokedex.R
 import com.maubocanegra.pokedex.databinding.ItemPokemonBinding
 import com.maubocanegra.pokedex.pokemondetail.domain.entity.PokemonUiEntity
+import com.maubocanegra.pokedex.pokemonrecyclerview.domain.uistate.PokemonDetailItemState
 import com.maubocanegra.pokedex.pokemonrecyclerview.domain.uistate.PokemonImageUiState
 import com.maubocanegra.pokedex.pokemonrecyclerview.view.formatter.createSpannable
 import com.maubocanegra.pokedex.pokemonrecyclerview.view.formatter.formatPokedexId
@@ -31,12 +33,22 @@ class PokemonItemViewHolder(
                     is PokemonPayload.Url, is  PokemonPayload.Sprites -> {
                         // No visible changes yet
                     }
+
+                    is PokemonPayload.ImageStateChanged -> {
+                    }
+                    is PokemonPayload.DetailStateChanged -> {
+
+                    }
+
                 }
             }
         }
     }
 
-    fun bind(pokemon: PokemonUiEntity) { with(binding){
+    fun bind(
+        pokemon: PokemonUiEntity,
+        state: PokemonImageUiState?
+    ) { with(binding){
         pokemonName.text = pokemon.name?.formatPokemonName()
         pokemonIndex.text = pokemon.id.toString().formatPokedexId(
             binding.root.context.getString(R.string.placeholder_pokedex_id)
@@ -46,6 +58,7 @@ class PokemonItemViewHolder(
 
         // placeholder for now
         //pokemonImage.setImageResource(android.R.color.transparent)
+        renderImage(state)
 
         val name = pokemon.name
         val url = pokemon.url
@@ -60,18 +73,46 @@ class PokemonItemViewHolder(
     fun renderImage(state: PokemonImageUiState?) {
         val imageView = binding.pokemonImage
         when (state) {
-            is PokemonImageUiState.Ready -> imageView.setImageBitmap(state.bitmap)
-            is PokemonImageUiState.Error -> imageView.setImageResource(R.drawable.pokeballart2)
-            PokemonImageUiState.Loading, PokemonImageUiState.Idle, null -> {
+            is PokemonImageUiState.Ready -> {
+                binding.progressBar2.visibility = View.GONE
+                imageView.setImageBitmap(state.bitmap)
+            }
+            is PokemonImageUiState.Error -> {
+                binding.progressBar2.visibility = View.GONE
+                imageView.setImageResource(R.drawable.pokeballart2)
+            }
+            is PokemonImageUiState.Loading -> {
+                binding.progressBar2.visibility = View.VISIBLE
+            }
+            PokemonImageUiState.Idle, null -> {
+                binding.progressBar2.visibility = View.GONE
                 // Set placeholder only if there is no bitmap already shown
-                val hasBitmap = imageView.drawable is android.graphics.drawable.BitmapDrawable
-                if (!hasBitmap) imageView.setImageResource(R.drawable.pokeballart1)
+                // val hasBitmap = imageView.drawable is android.graphics.drawable.BitmapDrawable
+                // if (!hasBitmap) imageView.setImageResource(R.drawable.pokeballart1)
+            }
+        }
+    }
+
+    fun renderDetail(state: PokemonDetailItemState?){
+        when(state){
+            PokemonDetailItemState.Loading -> {
+                binding.progressBarType.visibility = View.VISIBLE
+            }
+            PokemonDetailItemState.Ready -> {
+                binding.progressBarType.visibility = View.GONE
+            }
+            PokemonDetailItemState.Error -> {
+                binding.progressBarType.visibility = View.GONE
+            }
+            null, PokemonDetailItemState.Idle -> {
+                binding.progressBarType.visibility = View.GONE
             }
         }
     }
 
     /** Optional: call from onViewRecycled to avoid stale bitmaps. */
     fun clear() {
+        binding.progressBar2.visibility = View.GONE
         binding.pokemonImage.setImageDrawable(null)
         binding.root.setOnClickListener(null)
     }
