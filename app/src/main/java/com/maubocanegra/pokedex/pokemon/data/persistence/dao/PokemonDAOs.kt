@@ -1,5 +1,6 @@
 package com.maubocanegra.pokedex.pokemon.data.persistence.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -38,4 +39,26 @@ interface PokemonDetailDao {
 
     @Query("DELETE FROM pokemon_detail WHERE id = :id")
     suspend fun deletePokemonDetail(id: Int)
+}
+
+@Dao
+interface PokemonPagerListDao {
+    @Query("SELECT * FROM pokemon_list ORDER BY id ASC")
+    fun pagingSource(): PagingSource<Int, PokemonListItemDBEntity>
+
+    @Query("""
+        SELECT * FROM pokemon_list
+        ORDER BY id ASC
+        LIMIT :limit OFFSET :offset
+    """)
+    fun getPokemonPage(limit: Int, offset: Int): Flow<List<PokemonListItemDBEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPokemonList(items: List<PokemonListItemDBEntity>)
+
+    @Query("DELETE FROM pokemon_list")
+    suspend fun clearPokemonList()
+
+    @Query("SELECT COUNT(*) FROM pokemon_list")
+    suspend fun countRows(): Int
 }

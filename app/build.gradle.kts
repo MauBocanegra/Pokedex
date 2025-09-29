@@ -83,6 +83,7 @@ dependencies {
     // DI
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation)
+    implementation(libs.androidx.activity)
     ksp(libs.hilt.compiler)
 
     // Coroutines

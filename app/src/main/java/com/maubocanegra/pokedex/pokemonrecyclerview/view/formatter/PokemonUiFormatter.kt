@@ -27,7 +27,6 @@ fun List<PokemonTypesUiEntity>.createSpannable(): Spannable{
     this.forEach { pokemonTypeUiEntity ->
         val type = pokemonTypeUiEntity.type.name.uppercase()
         spannableStringBuilder.append("$type ")
-        println(type.lowercase())
         spannableStringBuilder.setSpan(
             ForegroundColorSpan(
                 type.lowercase().parseTypeToIntColor()

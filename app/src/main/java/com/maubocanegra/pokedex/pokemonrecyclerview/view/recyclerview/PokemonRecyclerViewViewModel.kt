@@ -158,7 +158,7 @@ class PokemonRecyclerViewViewModel @Inject constructor(
                                 .toMutableMap().apply {
                                     put(
                                         state.pokemonId,
-                                        PokemonDetailItemState.Ready
+                                        PokemonDetailItemState.Ready(pokemon)
                                     )
                                 }
                         )

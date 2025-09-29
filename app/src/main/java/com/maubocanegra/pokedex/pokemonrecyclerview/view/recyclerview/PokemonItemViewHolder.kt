@@ -98,7 +98,7 @@ class PokemonItemViewHolder(
             PokemonDetailItemState.Loading -> {
                 binding.progressBarType.visibility = View.VISIBLE
             }
-            PokemonDetailItemState.Ready -> {
+            is PokemonDetailItemState.Ready -> {
                 binding.progressBarType.visibility = View.GONE
             }
             PokemonDetailItemState.Error -> {

@@ -5,6 +5,8 @@ import androidx.room.Room
 import com.maubocanegra.pokedex.pokemon.data.persistence.PokemonDatabase
 import com.maubocanegra.pokedex.pokemon.data.persistence.dao.PokemonDetailDao
 import com.maubocanegra.pokedex.pokemon.data.persistence.dao.PokemonListDao
+import com.maubocanegra.pokedex.pokemon.data.persistence.dao.PokemonPagerListDao
+import com.maubocanegra.pokedex.pokemonstaggered.data.persistence.dao.PokemonRemoteKeysDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,4 +36,12 @@ object DatabaseModule {
     @Provides
     fun providePokemonDetailDao(db: PokemonDatabase): PokemonDetailDao =
         db.pokemonDetailDao()
+
+    @Provides
+    fun providePokemonPagerListDao(db: PokemonDatabase): PokemonPagerListDao =
+        db.pokemonPagerListDao()
+
+    @Provides
+    fun providePokemonRemoteKeysDao(db: PokemonDatabase): PokemonRemoteKeysDao =
+        db.pokemonRemoteKeysDao()
 }

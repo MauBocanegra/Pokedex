@@ -88,6 +88,7 @@ class PokemonRecyclerViewFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = pokemonAdapter
             setHasFixedSize(true) // optimization
+            itemAnimator = null
         }
 
         binding.recyclerView.addOnScrollListener( object: RecyclerView.OnScrollListener(){

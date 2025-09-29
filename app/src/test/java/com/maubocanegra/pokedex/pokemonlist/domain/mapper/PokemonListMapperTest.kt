@@ -31,8 +31,8 @@ class PokemonListMapperTest {
         val result: PokemonListModel = PokemonListMapper.mapToPokemonListModel(response)
 
         assertEquals(2, result.results.size)
-        assertEquals(PokemonListItemModel("bulbasaur", "url1"), result.results[0])
-        assertEquals(PokemonListItemModel("ivysaur", "url2"), result.results[1])
+        assertEquals(PokemonListItemModel(1, "bulbasaur", "url1"), result.results[0])
+        assertEquals(PokemonListItemModel(2, "ivysaur", "url2"), result.results[1])
     }
 
     @Test
